@@ -1,0 +1,94 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE and operating system
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Environment variables and credentials
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.yaml
+
+# RunPod credentials
+runpod_key.txt
+wandb/
+mlruns/
+
+# Raw and generated data
+data/raw/*
+data/interim/*
+data/processed/*
+data/external/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+
+# Model artifacts
+models/checkpoints/*
+models/exported/*
+!models/checkpoints/.gitkeep
+!models/exported/.gitkeep
+
+# Experiment outputs
+results/raw/*
+results/processed/*
+results/predictions/*
+!results/raw/.gitkeep
+!results/processed/.gitkeep
+!results/predictions/.gitkeep
+
+# Large report artifacts
+reports/runpod/*.log
+reports/runpod/*.json
+reports/runpod/*.txt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+manuscript/build/
+
+# PyTorch
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# NumPy and data outputs
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.parquet
+
+# Temporary files
+tmp/
+temp/
+cache/

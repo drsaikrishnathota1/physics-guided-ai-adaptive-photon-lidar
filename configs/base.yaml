@@ -1,0 +1,78 @@
+project:
+  name: physics-guided-ai-adaptive-photon-lidar
+  version: 0.1.0
+  seed: 42
+  deterministic: true
+
+scenario:
+  application: defense_oriented_reconnaissance
+  autonomous_weapon_functionality: false
+
+scene:
+  height: 64
+  width: 64
+  time_bins: 512
+  max_range_m: 3000.0
+  range_resolution_m: 0.30
+  target_count_min: 0
+  target_count_max: 3
+
+laser:
+  wavelength_nm: 1550.0
+  pulse_width_ns: 1.0
+  repetition_rate_hz: 100000
+  photon_budget_total: 100000
+  minimum_allocation: 0
+  maximum_allocation_per_step: 1000
+
+receiver:
+  aperture_diameter_m: 0.10
+  optical_efficiency: 0.55
+  field_of_view_mrad: 0.5
+
+detector:
+  type: SPAD
+  photon_detection_efficiency: 0.35
+  timing_jitter_ps: 80.0
+  dark_count_rate_hz: 500.0
+  dead_time_ns: 50.0
+  afterpulse_probability: 0.01
+
+atmosphere:
+  model: extinction_and_backscatter
+  extinction_coefficient_per_km: 0.10
+  background_photons_per_bin: 0.02
+  domain_randomization: true
+
+target:
+  reflectivity_min: 0.03
+  reflectivity_max: 0.60
+  velocity_mps_min: 0.0
+  velocity_mps_max: 25.0
+
+policy:
+  name: physics_guided_policy
+  architecture: recurrent_actor_critic
+  hidden_dimension: 256
+  observation_history: 4
+
+training:
+  device: cuda
+  epochs: 100
+  batch_size: 128
+  learning_rate: 0.0003
+  weight_decay: 0.000001
+  gradient_clip_norm: 1.0
+  mixed_precision: true
+
+evaluation:
+  detection_thresholds: 101
+  bootstrap_samples: 2000
+  confidence_level: 0.95
+  seeds: [11, 22, 33, 44, 55]
+
+logging:
+  save_raw_predictions: true
+  save_configuration: true
+  save_environment: true
+  save_git_commit: true
