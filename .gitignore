@@ -92,3 +92,7 @@ manuscript/build/
 tmp/
 temp/
 cache/
+
+# Keep curated publication figures under version control
+!figures/simulation/*.png
+!figures/publication/*.png
