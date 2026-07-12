@@ -11,7 +11,7 @@ scenario:
 scene:
   height: 64
   width: 64
-  time_bins: 512
+  time_bins: 4096
   max_range_m: 3000.0
   range_resolution_m: 0.30
   target_count_min: 0

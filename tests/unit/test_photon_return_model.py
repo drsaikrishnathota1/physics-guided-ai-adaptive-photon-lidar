@@ -83,7 +83,7 @@ def test_simulation_is_reproducible_with_fixed_seed() -> None:
         "atmosphere": AtmosphereParameters(),
         "target": TargetParameters(range_m=1000.0),
         "histogram": HistogramParameters(
-            num_bins=2048,
+            num_bins=4096,
             bin_width_ns=5.0,
         ),
     }

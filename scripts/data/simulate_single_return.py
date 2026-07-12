@@ -32,7 +32,7 @@ def main() -> None:
             reflectivity=0.20,
         ),
         histogram=HistogramParameters(
-            num_bins=2048,
+            num_bins=4096,
             bin_width_ns=5.0,
         ),
         rng=np.random.default_rng(42),
