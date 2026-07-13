@@ -1,0 +1,12 @@
+{
+  "git_commit": "f7ba46c2480766c4366bc99566585fba87bdcf96",
+  "experiment": "physics_validation_v1",
+  "monte_carlo": {
+    "trials": 5000.0,
+    "seed": 42.0,
+    "expected_total_counts": 165.72283498375575,
+    "observed_mean_counts": 166.1218,
+    "observed_variance_counts": 162.91274730946188,
+    "relative_mean_error": 0.002407423311840932
+  }
+}
