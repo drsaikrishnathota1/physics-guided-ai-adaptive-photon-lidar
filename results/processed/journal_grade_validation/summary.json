@@ -1,0 +1,48 @@
+{
+  "experiment": "journal_grade_physics_validation_v1",
+  "histogram_bins": 4096,
+  "bin_width_ns": 5.0,
+  "maximum_range_m": 3069.8747699200003,
+  "rows": [
+    {
+      "range_m": 250.0,
+      "target_bin": 334,
+      "expected_target_return_photons": 292.97866274622004,
+      "total_expected_detector_counts": 124.93783586446804,
+      "total_observed_counts": 122,
+      "intercepted_fraction": 1.0
+    },
+    {
+      "range_m": 500.0,
+      "target_bin": 667,
+      "expected_target_return_photons": 69.6724811887689,
+      "total_expected_detector_counts": 50.8437022991057,
+      "total_observed_counts": 70,
+      "intercepted_fraction": 1.0
+    },
+    {
+      "range_m": 1000.0,
+      "target_bin": 1334,
+      "expected_target_return_photons": 15.760566996751155,
+      "total_expected_detector_counts": 32.0707392473729,
+      "total_observed_counts": 41,
+      "intercepted_fraction": 1.0
+    },
+    {
+      "range_m": 2000.0,
+      "target_bin": 2669,
+      "expected_target_return_photons": 3.2259152215465146,
+      "total_expected_detector_counts": 27.654990921928118,
+      "total_observed_counts": 32,
+      "intercepted_fraction": 1.0
+    },
+    {
+      "range_m": 3000.0,
+      "target_bin": 4003,
+      "expected_target_return_photons": 0.6468959916683011,
+      "total_expected_detector_counts": 26.744040055704293,
+      "total_observed_counts": 31,
+      "intercepted_fraction": 0.5510905005114108
+    }
+  ]
+}
