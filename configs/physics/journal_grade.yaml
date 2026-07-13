@@ -1,0 +1,36 @@
+laser:
+  wavelength_nm: 1550.0
+  pulse_width_ns: 1.0
+  photons_per_pulse: 1.0e8
+  repetition_rate_hz: 100000.0
+  dwell_time_s: 0.01
+  full_angle_divergence_mrad: 0.5
+  initial_beam_radius_m: 0.01
+  transmitter_efficiency: 0.70
+
+receiver:
+  aperture_diameter_m: 0.10
+  optical_efficiency: 0.55
+
+detector:
+  type: SPAD
+  detection_efficiency: 0.35
+  dark_count_rate_hz: 500.0
+  dead_time_ns: 50.0
+  afterpulse_probability: 0.01
+  timing_jitter_ps: 80.0
+
+atmosphere:
+  extinction_coefficient_per_km: 0.10
+  volume_backscatter_coefficient_per_m: 1.0e-7
+  background_photons_per_bin_per_pulse: 1.0e-5
+
+histogram:
+  num_bins: 4096
+  bin_width_ns: 5.0
+
+target:
+  range_m: 1000.0
+  reflectivity: 0.20
+  projected_area_m2: 1.0
+  incidence_angle_deg: 0.0
