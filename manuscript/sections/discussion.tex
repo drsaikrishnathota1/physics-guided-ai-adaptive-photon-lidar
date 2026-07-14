@@ -1,0 +1,11 @@
+\section{Discussion}
+
+The results indicate that adaptive allocation can improve single-photon LiDAR sensing efficiency without modifying the underlying transmitter or detector hardware. The proposed method differs from purely posterior-based selection because it incorporates a predicted signal-to-background ratio derived from the optical forward model. Regions with high uncertainty but extremely weak expected optical contrast are therefore not always prioritized.
+
+The largest practical benefit is the reduction in photons and sensing steps required to obtain a confident target decision. This is relevant to photon-limited reconnaissance systems in which laser energy, dwell time, detector saturation, or platform power must be constrained.
+
+The study remains a numerical short communication rather than a deployment demonstration. All experiments were simulation based, and the atmospheric and target models use simplified homogeneous assumptions. The evaluation included one target in every episode; consequently, the reported zero false-focus rate is not equivalent to a dedicated target-absent false-alarm probability.
+
+The information-gain score is also a physics-guided heuristic rather than an exact mutual-information optimization. Nevertheless, the compact formulation is computationally inexpensive, interpretable, and directly linked to measurable optical quantities.
+
+Future work should evaluate target-absent scenes, nonhomogeneous atmospheric channels, moving targets, multiple targets, and experimental single-photon LiDAR measurements.

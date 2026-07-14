@@ -1,0 +1,88 @@
+\section{Methodology}
+
+\subsection{Pulsed Single-Photon LiDAR Model}
+
+For a target at range $R$, the round-trip delay is
+
+\begin{equation}
+\tau = \frac{2R}{c},
+\end{equation}
+
+where $c$ is the speed of light. The target return is assigned to the corresponding time-of-flight histogram bin.
+
+The transmitted photon budget during one sensing dwell is
+
+\begin{equation}
+N_{\mathrm{tx}} = N_{\mathrm{pulse}} N_{\mathrm{pulses}},
+\end{equation}
+
+where $N_{\mathrm{pulse}}$ denotes photons per pulse and $N_{\mathrm{pulses}}$ denotes the number of pulses accumulated during the dwell.
+
+Two-way atmospheric transmission is modeled using the Beer--Lambert relationship
+
+\begin{equation}
+T^2(R) =
+\exp\left(-2\alpha R\right),
+\end{equation}
+
+where $\alpha$ is the atmospheric extinction coefficient expressed in consistent distance units.
+
+The beam radius at range $R$ is approximated by
+
+\begin{equation}
+r_b(R) =
+r_0 + R\tan\left(\frac{\theta}{2}\right),
+\end{equation}
+
+where $r_0$ is the initial beam radius and $\theta$ is the full-angle divergence. The intercepted photon fraction is limited by the ratio between projected target area and beam-spot area.
+
+The simulator additionally incorporates distributed atmospheric backscatter, background photons, detector efficiency, timing jitter, dark counts, dead time, pile-up, and afterpulsing.
+
+\subsection{Sequential Target-Probability Update}
+
+Each candidate region maintains a posterior target-presence probability. After observing $y$ photon counts in a range window, the posterior is updated using Poisson likelihoods under the target-absent hypothesis $H_0$ and target-present hypothesis $H_1$:
+
+\begin{equation}
+P(H_1 \mid y) =
+\frac{
+P(y \mid H_1)P(H_1)
+}{
+P(y \mid H_1)P(H_1)
++
+P(y \mid H_0)P(H_0)
+}.
+\end{equation}
+
+\subsection{Physics-Guided Information Allocation}
+
+For region $i$, the allocation score is
+
+\begin{equation}
+S_i =
+\mathcal{H}(p_i)
+\log\left(1+\mathrm{SBR}_i\right)
+\frac{1}{\sqrt{n_i+1}},
+\end{equation}
+
+where $\mathcal{H}(p_i)$ is the binary entropy of the target posterior, $\mathrm{SBR}_i$ is the predicted signal-to-background ratio, and $n_i$ is the number of previous measurements assigned to the region.
+
+The next photon allocation is assigned to
+
+\begin{equation}
+i^{*} = \arg\max_i S_i.
+\end{equation}
+
+\subsection{Comparison Policies}
+
+The proposed strategy is compared with:
+
+\begin{enumerate}
+    \item Uniform round-robin allocation.
+    \item Random allocation.
+    \item Greedy allocation based on maximum target posterior.
+    \item Entropy allocation based on maximum posterior uncertainty.
+\end{enumerate}
+
+\subsection{Evaluation Protocol}
+
+Six candidate regions are positioned between 500~m and 3000~m. Each policy is evaluated over five random seeds and six possible target locations, producing 30 episodes per policy. Each sensing action allocates $2.5\times10^{11}$ photons, with a maximum total budget of $5.0\times10^{12}$ photons. Detection occurs when the posterior probability of the true target region reaches 0.90.
