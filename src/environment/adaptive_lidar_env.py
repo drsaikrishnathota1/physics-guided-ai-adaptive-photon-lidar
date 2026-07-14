@@ -181,8 +181,10 @@ class AdaptiveLidarEnvironment:
         if not regions:
             raise ValueError("At least one region is required.")
 
-        if not 0 <= target_region_index < len(regions):
-            raise ValueError("target_region_index is out of range.")
+        if target_region_index != -1 and not 0 <= target_region_index < len(regions):
+            raise ValueError(
+                "target_region_index must be -1 or a valid region index."
+            )
 
         self.regions = regions
         self.target_region_index = target_region_index
@@ -436,10 +438,10 @@ class AdaptiveLidarEnvironment:
         termination_reason: Optional[str] = None
 
         if (
-            self._posterior_probabilities[
+            self.target_region_index >= 0
+            and self._posterior_probabilities[
                 self.target_region_index
-            ]
-            >= self.config.detection_threshold
+            ] >= self.config.detection_threshold
         ):
             termination_reason = "target_detected"
 
