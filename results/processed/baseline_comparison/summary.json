@@ -1,0 +1,61 @@
+{
+  "experiment": "baseline_policy_comparison_v1",
+  "git_commit": "bacd2740e9c485180b258c9a445376597b573fc5",
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55
+  ],
+  "target_regions": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "summary": {
+    "uniform": {
+      "episodes": 30.0,
+      "detection_rate": 0.7666666666666667,
+      "mean_photons_used": 1958333333333.3333,
+      "mean_photons_when_detected": 1032608695652.174,
+      "mean_steps": 7.833333333333333,
+      "false_focus_rate": 0.0
+    },
+    "random": {
+      "episodes": 30.0,
+      "detection_rate": 0.6333333333333333,
+      "mean_photons_used": 2891666666666.6665,
+      "mean_photons_when_detected": 1671052631578.9473,
+      "mean_steps": 11.566666666666666,
+      "false_focus_rate": 0.0
+    },
+    "greedy": {
+      "episodes": 30.0,
+      "detection_rate": 0.9,
+      "mean_photons_used": 1650000000000.0,
+      "mean_photons_when_detected": 1277777777777.7778,
+      "mean_steps": 6.6,
+      "false_focus_rate": 0.0
+    },
+    "entropy": {
+      "episodes": 30.0,
+      "detection_rate": 0.9,
+      "mean_photons_used": 1650000000000.0,
+      "mean_photons_when_detected": 1277777777777.7778,
+      "mean_steps": 6.6,
+      "false_focus_rate": 0.0
+    },
+    "information_gain": {
+      "episodes": 30.0,
+      "detection_rate": 0.9333333333333333,
+      "mean_photons_used": 1650000000000.0,
+      "mean_photons_when_detected": 1410714285714.2856,
+      "mean_steps": 6.6,
+      "false_focus_rate": 0.0
+    }
+  }
+}
