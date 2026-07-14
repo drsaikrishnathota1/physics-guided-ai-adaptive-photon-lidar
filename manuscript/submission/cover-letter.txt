@@ -1,0 +1,41 @@
+Dear Editor,
+
+Please consider our short communication entitled “Physics-Guided Adaptive
+Photon Allocation for Defense-Oriented Single-Photon LiDAR” for publication
+in Optics & Laser Technology.
+
+This work presents an interpretable adaptive sensing strategy for
+photon-limited single-photon LiDAR. The proposed method combines posterior
+target uncertainty, predicted optical signal-to-background ratio, and
+measurement-count exploration to determine where the next photon allocation
+should be directed.
+
+The numerical framework incorporates beam divergence, target-footprint
+coupling, two-way atmospheric attenuation, atmospheric backscatter,
+time-of-flight histogram formation, and important SPAD detector
+nonidealities. The proposed allocation method is evaluated against uniform,
+random, greedy-posterior, and entropy-based strategies under an identical
+photon budget.
+
+Across 30 simulated episodes per method, the proposed physics-guided
+information allocation strategy achieved a detection rate of 93.3%,
+compared with 76.7% for uniform allocation. It also reduced average
+transmitted photon use by approximately 15.7% relative to uniform sensing.
+
+The manuscript is intentionally framed as a focused simulation-based short
+communication. It does not claim experimental deployment, exact
+mutual-information optimization, artificial-intelligence training, or
+quantum advantage. The limitations and required future experimental and
+target-absent validation are stated explicitly.
+
+The manuscript is original, has not been published previously, and is not
+under consideration by another journal. No classified, proprietary,
+personal, or clinical data were used.
+
+Thank you for considering this manuscript.
+
+Sincerely,
+
+Dr. Sai Krishna Thota
+Independent Researcher, USA
+Email: drsaikrishnathota@ieee.org

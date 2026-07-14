@@ -1,0 +1,5 @@
+• A physics-guided strategy adaptively allocates photons across LiDAR regions.
+• The method combines posterior uncertainty with predicted optical contrast.
+• Detection reached 93.3% across 30 simulated episodes.
+• Average photon use decreased by 15.7% relative to uniform allocation.
+• The framework includes atmospheric propagation and SPAD nonidealities.
