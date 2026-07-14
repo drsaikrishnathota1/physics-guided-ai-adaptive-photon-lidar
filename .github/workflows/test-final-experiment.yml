@@ -1,0 +1,64 @@
+name: Test Final Experiment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "scripts/analysis/**"
+      - "scripts/runpod/**"
+      - "tests/**"
+      - "configs/experiment/final_short_comm.yaml"
+      - ".github/workflows/test-final-experiment.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install lightweight dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            numpy \
+            scipy \
+            pandas \
+            matplotlib \
+            pyyaml \
+            tqdm \
+            pytest
+
+      - name: Run target-absent and ablation tests
+        run: |
+          python -m pytest \
+            tests/unit/test_target_absent_episode.py \
+            tests/unit/test_policy_ablation.py \
+            -q
+
+      - name: Run final experiment smoke test
+        run: |
+          python scripts/analysis/run_short_comm_final.py \
+            --smoke-test
+
+      - name: Summarize smoke test
+        run: |
+          python scripts/analysis/summarize_short_comm_final.py
+
+      - name: Upload smoke-test outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-experiment-smoke-test
+          path: results/processed/final_short_comm
