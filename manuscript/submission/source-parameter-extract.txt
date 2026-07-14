@@ -1,0 +1,244 @@
+===== JOURNAL MODEL PARAMETERS =====
+from src.physics.photon_return_model import (
+    SPEED_OF_LIGHT_M_S,
+    gaussian_instrument_response,
+)
+from src.physics.pulse_accounting import PulseSchedule
+
+
+@dataclass(frozen=True)
+class JournalLaser:
+    """Laser and pulse parameters."""
+
+    wavelength_nm: float = 1550.0
+    pulse_width_ns: float = 1.0
+    beam: BeamParameters = BeamParameters()
+
+
+@dataclass(frozen=True)
+class JournalReceiver:
+    """Receiver optical parameters."""
+
+    aperture_diameter_m: float = 0.10
+    optical_efficiency: float = 0.55
+
+    def __post_init__(self) -> None:
+        if self.aperture_diameter_m <= 0:
+            raise ValueError(
+                "aperture_diameter_m must be positive."
+            )
+
+        if not 0.0 <= self.optical_efficiency <= 1.0:
+            raise ValueError(
+                "optical_efficiency must be between 0 and 1."
+            )
+
+    @property
+    def aperture_area_m2(self) -> float:
+        radius_m = self.aperture_diameter_m / 2.0
+
+        return float(np.pi * radius_m**2)
+
+
+@dataclass(frozen=True)
+class JournalTarget:
+    """Extended diffuse target parameters."""
+
+    range_m: float = 1000.0
+    reflectivity: float = 0.20
+    projected_area_m2: float = 1.0
+    incidence_angle_deg: float = 0.0
+
+    def __post_init__(self) -> None:
+        if self.range_m <= 0:
+            raise ValueError("range_m must be positive.")
+
+        if not 0.0 <= self.reflectivity <= 1.0:
+            raise ValueError(
+                "reflectivity must be between 0 and 1."
+            )
+
+        if self.projected_area_m2 <= 0:
+            raise ValueError(
+                "projected_area_m2 must be positive."
+            )
+
+
+@dataclass(frozen=True)
+class JournalHistogram:
+    """Time-of-flight histogram configuration."""
+
+    num_bins: int = 4096
+    bin_width_ns: float = 5.0
+
+    def __post_init__(self) -> None:
+        if self.num_bins <= 0:
+            raise ValueError("num_bins must be positive.")
+
+        if self.bin_width_ns <= 0:
+            raise ValueError("bin_width_ns must be positive.")
+
+    @property
+    def maximum_unambiguous_range_m(self) -> float:
+        return (
+            SPEED_OF_LIGHT_M_S
+            * self.num_bins
+            * self.bin_width_ns
+            * 1.0e-9
+            / 2.0
+        )
+
+
+@dataclass(frozen=True)
+
+===== DETECTOR PARAMETERS =====
+"""Approximate SPAD efficiency, pile-up, dead time, and afterpulsing."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import numpy as np
+from numpy.typing import NDArray
+
+
+@dataclass(frozen=True)
+class SPADParameters:
+    """Single-photon avalanche diode parameters."""
+
+    detection_efficiency: float = 0.35
+    dark_count_rate_hz: float = 500.0
+    dead_time_ns: float = 50.0
+    afterpulse_probability: float = 0.01
+    timing_jitter_ps: float = 80.0
+
+    def __post_init__(self) -> None:
+        if not 0.0 <= self.detection_efficiency <= 1.0:
+            raise ValueError(
+                "detection_efficiency must be between 0 and 1."
+            )
+
+        if self.dark_count_rate_hz < 0:
+            raise ValueError("dark_count_rate_hz cannot be negative.")
+
+        if self.dead_time_ns < 0:
+            raise ValueError("dead_time_ns cannot be negative.")
+
+        if not 0.0 <= self.afterpulse_probability <= 1.0:
+            raise ValueError(
+                "afterpulse_probability must be between 0 and 1."
+            )
+
+        if self.timing_jitter_ps < 0:
+            raise ValueError("timing_jitter_ps cannot be negative.")
+
+
+def primary_detection_probability(
+    incident_photons_per_pulse: NDArray[np.float64],
+    *,
+    bin_width_ns: float,
+
+===== EXPERIMENT SETTINGS =====
+    target_region_index: int,
+    seed: int,
+) -> AdaptiveLidarEnvironment:
+    """Construct one shared baseline-evaluation environment."""
+    regions = [
+        RegionDefinition(500.0, 0.20),
+        RegionDefinition(1000.0, 0.18),
+        RegionDefinition(1500.0, 0.15),
+        RegionDefinition(2000.0, 0.12),
+        RegionDefinition(2500.0, 0.10),
+        RegionDefinition(3000.0, 0.08),
+    ]
+
+    return AdaptiveLidarEnvironment(
+        regions=regions,
+        target_region_index=target_region_index,
+        config=AdaptiveEnvironmentConfig(
+            total_photon_budget=5.0e12,
+            photons_per_action=2.5e11,
+            pulses_per_action=1000,
+            initial_target_probability=0.10,
+            detection_threshold=0.90,
+            maximum_steps=20,
+        ),
+        laser=JournalLaser(),
+        receiver=JournalReceiver(),
+        detector=SPADParameters(),
+        atmosphere=AtmosphericChannel(
+            extinction_coefficient_per_km=0.10,
+            volume_backscatter_coefficient_per_m=1.0e-7,
+            background_photons_per_bin_per_pulse=1.0e-5,
+        ),
+        histogram=JournalHistogram(
+            num_bins=4096,
+            bin_width_ns=5.0,
+        ),
+        seed=seed,
+    )
+
+
+def make_policy(
+    name: str,
+    seed: int,
+):
+    """Construct a policy by name."""
+    if name == "uniform":
+
+===== INFORMATION POLICY FILES =====
+src/policies/information_gain_policy.py
+
+===== INFORMATION POLICY CONTENT =====
+--- src/policies/information_gain_policy.py ---
+"""Approximate Bayesian information-gain allocation."""
+
+from __future__ import annotations
+
+import numpy as np
+
+from src.environment.adaptive_lidar_env import (
+    AdaptiveLidarEnvironment,
+    AdaptiveObservation,
+)
+from src.policies.base_policy import PhotonAllocationPolicy
+from src.policies.entropy_policy import binary_entropy
+
+
+class InformationGainPolicy(PhotonAllocationPolicy):
+    """Combine uncertainty, optical contrast, and exploration."""
+
+    name = "information_gain"
+
+    def select_region(
+        self,
+        observation: AdaptiveObservation,
+        environment: AdaptiveLidarEnvironment,
+    ) -> int:
+        uncertainty = binary_entropy(
+            observation.posterior_probabilities
+        )
+
+        optical_contrast = np.asarray(
+            [
+                environment.predicted_signal_to_background_ratio(
+                    region_index
+                )
+                for region_index in range(
+                    environment.number_of_regions
+                )
+            ],
+            dtype=np.float64,
+        )
+
+        exploration_bonus = 1.0 / np.sqrt(
+            observation.measurements_per_region + 1.0
+        )
+
+        score = (
+            uncertainty
+            * np.log1p(optical_contrast)
+            * exploration_bonus
+        )
+
+        return int(np.argmax(score))
