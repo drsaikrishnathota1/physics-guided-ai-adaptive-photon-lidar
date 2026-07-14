@@ -1,0 +1,71 @@
+experiment:
+  name: short_communication_v1
+  objective: photon_efficient_target_detection
+
+evaluation:
+  seeds:
+    - 11
+    - 22
+    - 33
+    - 44
+    - 55
+
+  ranges_m:
+    - 500.0
+    - 1500.0
+    - 3000.0
+
+  photon_budgets:
+    - 1.0e12
+    - 2.0e12
+    - 3.5e12
+    - 5.0e12
+
+  atmospheres:
+    clear:
+      extinction_coefficient_per_km: 0.05
+      volume_backscatter_coefficient_per_m: 5.0e-8
+      background_photons_per_bin_per_pulse: 5.0e-6
+
+    degraded:
+      name: fog
+      extinction_coefficient_per_km: 1.00
+      volume_backscatter_coefficient_per_m: 8.0e-7
+      background_photons_per_bin_per_pulse: 2.0e-5
+
+  target_present_episodes_per_configuration: 5
+  target_absent_episodes_per_atmosphere: 20
+
+  detection_threshold: 0.90
+  false_alarm_threshold: 0.90
+  maximum_steps: 20
+
+baselines:
+  - uniform
+  - greedy
+  - entropy
+  - information_gain
+
+proposed_method:
+  name: physics_guided_ai
+  architecture: lightweight_policy_network
+  hidden_dimensions:
+    - 128
+    - 64
+  activation: relu
+
+features:
+  - posterior_probability
+  - measurement_count
+  - photons_used
+  - remaining_budget_fraction
+  - predicted_signal_to_background_ratio
+  - normalized_range
+  - atmospheric_transmission
+
+metrics:
+  - detection_rate
+  - false_alarm_rate
+  - photons_to_detection
+  - sensing_steps
+  - inference_latency_ms
