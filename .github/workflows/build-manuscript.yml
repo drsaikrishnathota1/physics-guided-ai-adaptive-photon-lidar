@@ -1,0 +1,36 @@
+name: Build Manuscript PDF
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "manuscript/**"
+      - ".github/workflows/build-manuscript.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX manuscript
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: manuscript.tex
+          working_directory: manuscript
+          latexmk_use_xelatex: false
+          args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode
+
+      - name: Upload manuscript PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-communication-manuscript
+          path: manuscript/manuscript.pdf
+          if-no-files-found: error
