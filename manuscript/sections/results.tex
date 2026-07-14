@@ -38,3 +38,28 @@ Average photon consumption decreased from $1.958\times10^{12}$ photons for unifo
 The proposed method also reduced the average number of sensing actions from 7.83 to 6.60. The improvement arose from combining posterior uncertainty with the predicted optical contrast of each region. This allowed the strategy to prioritize measurements that were both uncertain and physically capable of producing informative photon returns.
 
 Greedy and entropy allocation produced identical aggregate results in this pilot. This behavior was associated with equal initial posterior probabilities and deterministic selection under tied scores. The result should therefore be interpreted as a property of the current pilot configuration rather than evidence that the two policies are generally equivalent.
+
+Figure~\ref{fig:detection_rate} compares the target-detection rate of the
+five allocation strategies. The physics-guided information strategy achieved
+the highest detection rate of 93.3\%.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{figures/final/figure_detection_rate.pdf}
+\caption{Target-detection rate across the evaluated photon-allocation
+strategies. Each strategy was evaluated over 30 simulated episodes.}
+\label{fig:detection_rate}
+\end{figure}
+
+Figure~\ref{fig:mean_photons} compares average transmitted photon use. The
+physics-guided strategy used approximately 15.7\% fewer photons than uniform
+allocation.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{figures/final/figure_mean_photons.pdf}
+\caption{Mean transmitted photon consumption across allocation strategies.
+The physics-guided information strategy reduced average photon use relative
+to uniform allocation.}
+\label{fig:mean_photons}
+\end{figure}
