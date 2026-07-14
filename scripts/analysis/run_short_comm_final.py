@@ -167,15 +167,13 @@ def build_environment(
 def deterministic_episode_seed(
     *,
     base_seed: int,
-    policy_index: int,
     atmosphere_index: int,
     budget_index: int,
     target_index: int,
 ) -> int:
-    """Create a unique deterministic seed for one episode."""
+    """Create a matched seed shared by all policies."""
     return int(
         base_seed
-        + policy_index * 1_000_000
         + atmosphere_index * 100_000
         + budget_index * 10_000
         + (target_index + 1) * 100
@@ -287,7 +285,6 @@ def main() -> None:
                         episode_seed = (
                             deterministic_episode_seed(
                                 base_seed=int(base_seed),
-                                policy_index=policy_index,
                                 atmosphere_index=(
                                     atmosphere_index
                                 ),
