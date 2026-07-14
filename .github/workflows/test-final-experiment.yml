@@ -50,12 +50,12 @@ jobs:
 
       - name: Run final experiment smoke test
         run: |
-          python scripts/analysis/run_short_comm_final.py \
+          PYTHONPATH=. python scripts/analysis/run_short_comm_final.py \
             --smoke-test
 
       - name: Summarize smoke test
         run: |
-          python scripts/analysis/summarize_short_comm_final.py
+          PYTHONPATH=. python scripts/analysis/summarize_short_comm_final.py
 
       - name: Upload smoke-test outputs
         uses: actions/upload-artifact@v4

@@ -31,19 +31,19 @@ python -m pytest \
   -q
 
 echo "Running smoke test..."
-python scripts/analysis/run_short_comm_final.py \
+PYTHONPATH=. python scripts/analysis/run_short_comm_final.py \
   --smoke-test
 
 echo "Smoke-test summary..."
-python scripts/analysis/summarize_short_comm_final.py
+PYTHONPATH=. python scripts/analysis/summarize_short_comm_final.py
 
 rm -rf results/processed/final_short_comm
 
 echo "Running complete final experiment..."
-python scripts/analysis/run_short_comm_final.py
+PYTHONPATH=. python scripts/analysis/run_short_comm_final.py
 
 echo "Creating statistical summaries..."
-python scripts/analysis/summarize_short_comm_final.py
+PYTHONPATH=. python scripts/analysis/summarize_short_comm_final.py
 
 echo "Final outputs:"
 find results/processed/final_short_comm \
