@@ -9,6 +9,7 @@ Category & Parameter & Value \\
 Laser & Wavelength & 1550 nm \\
 Laser & Pulse width & 1 ns \\
 Laser & Full-angle divergence & 0.5 mrad \\
+Laser & Initial beam radius & 0.01 m \\
 Laser & Transmitter efficiency & 0.70 \\
 Receiver & Aperture diameter & 0.10 m \\
 Receiver & Optical efficiency & 0.55 \\
@@ -19,10 +20,17 @@ Detector & Dead time & 50 ns \\
 Detector & Afterpulse probability & 0.01 \\
 Histogram & Number of bins & 4096 \\
 Histogram & Bin width & 5 ns \\
-Environment & Candidate ranges & 500--3000 m \\
+Atmosphere & Extinction coefficient & 0.10 km$^{-1}$ \\
+Atmosphere & Volume backscatter & $1.0\times10^{-7}$ m$^{-1}$ \\
+Atmosphere & Background level & $1.0\times10^{-5}$ bin$^{-1}$ pulse$^{-1}$ \\
+Allocation & Pulses per action & 1000 \\
 Allocation & Photons per action & $2.5\times10^{11}$ \\
 Allocation & Total photon budget & $5.0\times10^{12}$ \\
+Allocation & Maximum steps & 20 \\
+Decision & Initial target probability & 0.10 \\
 Decision & Detection threshold & 0.90 \\
+Evaluation & Random seeds & 5 \\
+Evaluation & Target locations & 6 \\
 Evaluation & Episodes per policy & 30 \\
 \bottomrule
 \end{tabular}
