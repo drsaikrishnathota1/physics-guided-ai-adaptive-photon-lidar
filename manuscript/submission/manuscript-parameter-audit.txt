@@ -1,0 +1,344 @@
+===== SOURCE COMMIT =====
+c183e1dc124efd5787496cc4d0a26e515aaa1dd8
+
+===== LASER / RECEIVER / DETECTOR =====
+src/physics/photon_return_model.py:8:- receiver aperture and optical efficiency;
+src/physics/photon_return_model.py:35:    wavelength_nm: float = 1550.0
+src/physics/photon_return_model.py:36:    pulse_width_ns: float = 1.0
+src/physics/photon_return_model.py:44:    aperture_diameter_m: float = 0.10
+src/physics/photon_return_model.py:45:    optical_efficiency: float = 0.55
+src/physics/photon_return_model.py:52:    photon_detection_efficiency: float = 0.35
+src/physics/photon_return_model.py:53:    timing_jitter_ps: float = 80.0
+src/physics/photon_return_model.py:54:    dark_count_rate_hz: float = 500.0
+src/physics/photon_return_model.py:97:def receiver_aperture_area(aperture_diameter_m: float) -> float:
+src/physics/photon_return_model.py:98:    """Return the circular receiver aperture area in square metres."""
+src/physics/photon_return_model.py:99:    if aperture_diameter_m <= 0:
+src/physics/photon_return_model.py:100:        raise ValueError("aperture_diameter_m must be positive.")
+src/physics/photon_return_model.py:102:    radius_m = aperture_diameter_m / 2.0
+src/physics/photon_return_model.py:169:            × receiver_aperture_area
+src/physics/photon_return_model.py:172:            × optical_efficiency
+src/physics/photon_return_model.py:173:            × photon_detection_efficiency
+src/physics/photon_return_model.py:176:    Later versions may include beam divergence, incidence angle, receiver field
+src/physics/photon_return_model.py:177:    of view, speckle, target BRDF and wavelength-dependent atmospheric effects.
+src/physics/photon_return_model.py:191:    if not 0.0 <= receiver.optical_efficiency <= 1.0:
+src/physics/photon_return_model.py:192:        raise ValueError("receiver.optical_efficiency must be between 0 and 1.")
+src/physics/photon_return_model.py:194:    if not 0.0 <= detector.photon_detection_efficiency <= 1.0:
+src/physics/photon_return_model.py:196:            "detector.photon_detection_efficiency must be between 0 and 1."
+src/physics/photon_return_model.py:199:    aperture_area_m2 = receiver_aperture_area(
+src/physics/photon_return_model.py:200:        receiver.aperture_diameter_m
+src/physics/photon_return_model.py:205:        * aperture_area_m2
+src/physics/photon_return_model.py:221:        * receiver.optical_efficiency
+src/physics/photon_return_model.py:222:        * detector.photon_detection_efficiency
+src/physics/photon_return_model.py:239:    if laser.pulse_width_ns <= 0:
+src/physics/photon_return_model.py:240:        raise ValueError("laser.pulse_width_ns must be positive.")
+src/physics/photon_return_model.py:242:    if detector.timing_jitter_ps < 0:
+src/physics/photon_return_model.py:243:        raise ValueError("detector.timing_jitter_ps cannot be negative.")
+src/physics/photon_return_model.py:245:    pulse_sigma_ns = laser.pulse_width_ns / 2.355
+src/physics/photon_return_model.py:246:    detector_sigma_ns = detector.timing_jitter_ps * 1e-3 / 2.355
+src/physics/photon_return_model.py:283:    if detector.dark_count_rate_hz < 0:
+src/physics/photon_return_model.py:284:        raise ValueError("dark_count_rate_hz cannot be negative.")
+src/physics/photon_return_model.py:286:    dark_counts_total = (
+src/physics/photon_return_model.py:287:        detector.dark_count_rate_hz * histogram.integration_time_s
+src/physics/photon_return_model.py:290:    dark_counts_per_bin = dark_counts_total / histogram.num_bins
+src/physics/photon_return_model.py:295:        + dark_counts_per_bin
+src/physics/detector_nonidealities.py:15:    detection_efficiency: float = 0.35
+src/physics/detector_nonidealities.py:16:    dark_count_rate_hz: float = 500.0
+src/physics/detector_nonidealities.py:17:    dead_time_ns: float = 50.0
+src/physics/detector_nonidealities.py:18:    afterpulse_probability: float = 0.01
+src/physics/detector_nonidealities.py:19:    timing_jitter_ps: float = 80.0
+src/physics/detector_nonidealities.py:22:        if not 0.0 <= self.detection_efficiency <= 1.0:
+src/physics/detector_nonidealities.py:24:                "detection_efficiency must be between 0 and 1."
+src/physics/detector_nonidealities.py:27:        if self.dark_count_rate_hz < 0:
+src/physics/detector_nonidealities.py:28:            raise ValueError("dark_count_rate_hz cannot be negative.")
+src/physics/detector_nonidealities.py:30:        if self.dead_time_ns < 0:
+src/physics/detector_nonidealities.py:31:            raise ValueError("dead_time_ns cannot be negative.")
+src/physics/detector_nonidealities.py:33:        if not 0.0 <= self.afterpulse_probability <= 1.0:
+src/physics/detector_nonidealities.py:35:                "afterpulse_probability must be between 0 and 1."
+src/physics/detector_nonidealities.py:38:        if self.timing_jitter_ps < 0:
+src/physics/detector_nonidealities.py:39:            raise ValueError("timing_jitter_ps cannot be negative.")
+src/physics/detector_nonidealities.py:55:        detector.dark_count_rate_hz
+src/physics/detector_nonidealities.py:61:        detector.detection_efficiency
+src/physics/detector_nonidealities.py:69:def apply_dead_time_approximation(
+src/physics/detector_nonidealities.py:74:    dead_time_ns: float,
+src/physics/detector_nonidealities.py:89:    recovery_bins = int(np.ceil(dead_time_ns / bin_width_ns))
+src/physics/detector_nonidealities.py:136:    dead_time_corrected = apply_dead_time_approximation(
+src/physics/detector_nonidealities.py:140:        dead_time_ns=detector.dead_time_ns,
+src/physics/detector_nonidealities.py:143:    expected_afterpulse = np.zeros_like(dead_time_corrected)
+src/physics/detector_nonidealities.py:145:    if dead_time_corrected.size > 1:
+src/physics/detector_nonidealities.py:146:        expected_afterpulse[1:] = (
+src/physics/detector_nonidealities.py:147:            detector.afterpulse_probability
+src/physics/detector_nonidealities.py:148:            * dead_time_corrected[:-1]
+src/physics/detector_nonidealities.py:152:        dead_time_corrected + expected_afterpulse,
+src/physics/beam_geometry.py:1:"""Laser beam divergence and target-footprint coupling."""
+src/physics/beam_geometry.py:14:    full_angle_divergence_mrad: float = 0.5
+src/physics/beam_geometry.py:16:    transmitter_efficiency: float = 0.70
+src/physics/beam_geometry.py:19:        if self.full_angle_divergence_mrad < 0:
+src/physics/beam_geometry.py:21:                "full_angle_divergence_mrad cannot be negative."
+src/physics/beam_geometry.py:27:        if not 0.0 <= self.transmitter_efficiency <= 1.0:
+src/physics/beam_geometry.py:29:                "transmitter_efficiency must be between 0 and 1."
+src/physics/beam_geometry.py:39:    Divergence is treated as the full angular divergence.
+src/physics/beam_geometry.py:44:    half_angle_rad = beam.full_angle_divergence_mrad * 1.0e-3 / 2.0
+src/physics/journal_grade_model.py:36:    wavelength_nm: float = 1550.0
+src/physics/journal_grade_model.py:37:    pulse_width_ns: float = 1.0
+src/physics/journal_grade_model.py:45:    aperture_diameter_m: float = 0.10
+src/physics/journal_grade_model.py:46:    optical_efficiency: float = 0.55
+src/physics/journal_grade_model.py:49:        if self.aperture_diameter_m <= 0:
+src/physics/journal_grade_model.py:51:                "aperture_diameter_m must be positive."
+src/physics/journal_grade_model.py:54:        if not 0.0 <= self.optical_efficiency <= 1.0:
+src/physics/journal_grade_model.py:56:                "optical_efficiency must be between 0 and 1."
+src/physics/journal_grade_model.py:60:    def aperture_area_m2(self) -> float:
+src/physics/journal_grade_model.py:61:        radius_m = self.aperture_diameter_m / 2.0
+src/physics/journal_grade_model.py:157:        receiver.aperture_area_m2
+src/physics/journal_grade_model.py:163:        * laser.beam.transmitter_efficiency
+src/physics/journal_grade_model.py:169:        * receiver.optical_efficiency
+src/physics/journal_grade_model.py:239:            photon_detection_efficiency=detector.detection_efficiency,
+src/physics/journal_grade_model.py:240:            timing_jitter_ps=detector.timing_jitter_ps,
+src/physics/journal_grade_model.py:241:            dark_count_rate_hz=detector.dark_count_rate_hz,
+src/physics/journal_grade_model.py:244:            wavelength_nm=laser.wavelength_nm,
+src/physics/journal_grade_model.py:245:            pulse_width_ns=laser.pulse_width_ns,
+src/physics/journal_grade_model.py:258:        transmitter_efficiency=(
+src/physics/journal_grade_model.py:259:            laser.beam.transmitter_efficiency
+src/physics/journal_grade_model.py:261:        receiver_aperture_area_m2=(
+src/physics/journal_grade_model.py:262:            receiver.aperture_area_m2
+src/physics/journal_grade_model.py:264:        receiver_efficiency=receiver.optical_efficiency,
+src/physics/atmospheric_channel.py:89:    transmitter_efficiency: float,
+src/physics/atmospheric_channel.py:90:    receiver_aperture_area_m2: float,
+src/physics/atmospheric_channel.py:91:    receiver_efficiency: float,
+src/physics/atmospheric_channel.py:129:        * transmitter_efficiency
+src/physics/atmospheric_channel.py:132:        * receiver_aperture_area_m2
+src/physics/atmospheric_channel.py:133:        * receiver_efficiency
+configs/physics/journal_grade.yaml:2:  wavelength_nm: 1550.0
+configs/physics/journal_grade.yaml:3:  pulse_width_ns: 1.0
+configs/physics/journal_grade.yaml:7:  full_angle_divergence_mrad: 0.5
+configs/physics/journal_grade.yaml:9:  transmitter_efficiency: 0.70
+configs/physics/journal_grade.yaml:12:  aperture_diameter_m: 0.10
+configs/physics/journal_grade.yaml:13:  optical_efficiency: 0.55
+configs/physics/journal_grade.yaml:17:  detection_efficiency: 0.35
+configs/physics/journal_grade.yaml:18:  dark_count_rate_hz: 500.0
+configs/physics/journal_grade.yaml:19:  dead_time_ns: 50.0
+configs/physics/journal_grade.yaml:20:  afterpulse_probability: 0.01
+configs/physics/journal_grade.yaml:21:  timing_jitter_ps: 80.0
+configs/base.yaml:21:  wavelength_nm: 1550.0
+configs/base.yaml:22:  pulse_width_ns: 1.0
+configs/base.yaml:29:  aperture_diameter_m: 0.10
+configs/base.yaml:30:  optical_efficiency: 0.55
+configs/base.yaml:35:  photon_detection_efficiency: 0.35
+configs/base.yaml:36:  timing_jitter_ps: 80.0
+configs/base.yaml:37:  dark_count_rate_hz: 500.0
+configs/base.yaml:38:  dead_time_ns: 50.0
+configs/base.yaml:39:  afterpulse_probability: 0.01
+
+===== HISTOGRAM =====
+src/environment/adaptive_lidar_env.py:254:                self.histogram.num_bins
+src/environment/adaptive_lidar_env.py:255:                * self.histogram.bin_width_ns
+src/environment/adaptive_lidar_env.py:315:            self.histogram.num_bins,
+src/environment/adaptive_lidar_env.py:397:            self.histogram.num_bins,
+src/physics/photon_return_model.py:79:    num_bins: int = 512
+src/physics/photon_return_model.py:80:    bin_width_ns: float = 5.0
+src/physics/photon_return_model.py:142:    bin_width_s = histogram.bin_width_ns * 1e-9
+src/physics/photon_return_model.py:143:    target_bin = int(np.rint(time_s / bin_width_s))
+src/physics/photon_return_model.py:145:    if target_bin < 0 or target_bin >= histogram.num_bins:
+src/physics/photon_return_model.py:148:            f"Computed bin={target_bin}, available bins={histogram.num_bins}."
+src/physics/photon_return_model.py:253:        combined_sigma_ns / histogram.bin_width_ns,
+src/physics/photon_return_model.py:257:    bins = np.arange(histogram.num_bins, dtype=np.float64)
+src/physics/photon_return_model.py:290:    dark_counts_per_bin = dark_counts_total / histogram.num_bins
+src/physics/photon_return_model.py:299:        histogram.num_bins,
+src/physics/photon_return_model.py:372:            num_bins=2048,
+src/physics/photon_return_model.py:373:            bin_width_ns=5.0,
+src/physics/detector_nonidealities.py:45:    bin_width_ns: float,
+src/physics/detector_nonidealities.py:56:        * bin_width_ns
+src/physics/detector_nonidealities.py:73:    bin_width_ns: float,
+src/physics/detector_nonidealities.py:84:    if bin_width_ns <= 0:
+src/physics/detector_nonidealities.py:85:        raise ValueError("bin_width_ns must be positive.")
+src/physics/detector_nonidealities.py:89:    recovery_bins = int(np.ceil(dead_time_ns / bin_width_ns))
+src/physics/detector_nonidealities.py:115:    bin_width_ns: float,
+src/physics/detector_nonidealities.py:128:        bin_width_ns=bin_width_ns,
+src/physics/detector_nonidealities.py:139:        bin_width_ns=bin_width_ns,
+src/physics/detector_nonidealities.py:161:    bin_width_ns: float,
+src/physics/detector_nonidealities.py:169:        bin_width_ns=bin_width_ns,
+src/physics/journal_grade_model.py:94:    num_bins: int = 4096
+src/physics/journal_grade_model.py:95:    bin_width_ns: float = 5.0
+src/physics/journal_grade_model.py:98:        if self.num_bins <= 0:
+src/physics/journal_grade_model.py:99:            raise ValueError("num_bins must be positive.")
+src/physics/journal_grade_model.py:101:        if self.bin_width_ns <= 0:
+src/physics/journal_grade_model.py:102:            raise ValueError("bin_width_ns must be positive.")
+src/physics/journal_grade_model.py:108:            * self.num_bins
+src/physics/journal_grade_model.py:109:            * self.bin_width_ns
+src/physics/journal_grade_model.py:187:            / (histogram.bin_width_ns * 1.0e-9)
+src/physics/journal_grade_model.py:191:    if not 0 <= index < histogram.num_bins:
+src/physics/journal_grade_model.py:235:            num_bins=histogram.num_bins,
+src/physics/journal_grade_model.py:236:            bin_width_ns=histogram.bin_width_ns,
+src/physics/journal_grade_model.py:253:        num_bins=histogram.num_bins,
+src/physics/journal_grade_model.py:254:        bin_width_ns=histogram.bin_width_ns,
+src/physics/journal_grade_model.py:269:        histogram.num_bins,
+src/physics/journal_grade_model.py:284:        bin_width_ns=histogram.bin_width_ns,
+src/physics/journal_grade_model.py:291:        bin_width_ns=histogram.bin_width_ns,
+src/physics/atmospheric_channel.py:68:    num_bins: int,
+src/physics/atmospheric_channel.py:69:    bin_width_ns: float,
+src/physics/atmospheric_channel.py:72:    if num_bins <= 0:
+src/physics/atmospheric_channel.py:73:        raise ValueError("num_bins must be positive.")
+src/physics/atmospheric_channel.py:75:    if bin_width_ns <= 0:
+src/physics/atmospheric_channel.py:76:        raise ValueError("bin_width_ns must be positive.")
+src/physics/atmospheric_channel.py:78:    bin_width_s = bin_width_ns * 1.0e-9
+src/physics/atmospheric_channel.py:79:    times_s = (np.arange(num_bins, dtype=np.float64) + 0.5) * bin_width_s
+src/physics/atmospheric_channel.py:86:    num_bins: int,
+src/physics/atmospheric_channel.py:87:    bin_width_ns: float,
+src/physics/atmospheric_channel.py:109:        num_bins=num_bins,
+src/physics/atmospheric_channel.py:110:        bin_width_ns=bin_width_ns,
+src/physics/atmospheric_channel.py:117:        * bin_width_ns
+configs/physics/journal_grade.yaml:29:  num_bins: 4096
+configs/physics/journal_grade.yaml:30:  bin_width_ns: 5.0
+configs/base.yaml:14:  time_bins: 4096
+
+===== ALLOCATION =====
+src/environment/adaptive_lidar_env.py:31:    range_m: float
+src/environment/adaptive_lidar_env.py:41:    total_photon_budget: float = 5.0e12
+src/environment/adaptive_lidar_env.py:42:    photons_per_action: float = 2.5e11
+src/environment/adaptive_lidar_env.py:45:    detection_threshold: float = 0.90
+src/environment/adaptive_lidar_env.py:48:    maximum_steps: int = 100
+src/environment/adaptive_lidar_env.py:51:        if self.total_photon_budget <= 0:
+src/environment/adaptive_lidar_env.py:52:            raise ValueError("total_photon_budget must be positive.")
+src/environment/adaptive_lidar_env.py:54:        if self.photons_per_action <= 0:
+src/environment/adaptive_lidar_env.py:55:            raise ValueError("photons_per_action must be positive.")
+src/environment/adaptive_lidar_env.py:60:        if self.photons_per_action > self.total_photon_budget:
+src/environment/adaptive_lidar_env.py:62:                "photons_per_action cannot exceed total_photon_budget."
+src/environment/adaptive_lidar_env.py:70:        if not 0.0 < self.detection_threshold < 1.0:
+src/environment/adaptive_lidar_env.py:72:                "detection_threshold must be between zero and one."
+src/environment/adaptive_lidar_env.py:75:        if self.maximum_steps <= 0:
+src/environment/adaptive_lidar_env.py:76:            raise ValueError("maximum_steps must be positive.")
+src/environment/adaptive_lidar_env.py:213:        self._remaining_photons = config.total_photon_budget
+src/environment/adaptive_lidar_env.py:269:            range_m=region.range_m,
+src/environment/adaptive_lidar_env.py:301:            self.config.photons_per_action
+src/environment/adaptive_lidar_env.py:356:            self.config.photons_per_action
+src/environment/adaptive_lidar_env.py:442:            >= self.config.detection_threshold
+src/environment/adaptive_lidar_env.py:449:        elif self._current_step >= self.config.maximum_steps:
+src/environment/adaptive_lidar_env.py:450:            termination_reason = "maximum_steps_reached"
+src/evaluation/baseline_runner.py:79:        environment.config.total_photon_budget
+src/physics/photon_return_model.py:70:    range_m: float = 1000.0
+src/physics/photon_return_model.py:107:    range_m: float,
+src/physics/photon_return_model.py:115:    if range_m < 0:
+src/physics/photon_return_model.py:116:        raise ValueError("range_m cannot be negative.")
+src/physics/photon_return_model.py:121:    range_km = range_m / 1000.0
+src/physics/photon_return_model.py:128:def round_trip_time(range_m: float) -> float:
+src/physics/photon_return_model.py:130:    if range_m < 0:
+src/physics/photon_return_model.py:131:        raise ValueError("range_m cannot be negative.")
+src/physics/photon_return_model.py:133:    return 2.0 * range_m / SPEED_OF_LIGHT_M_S
+src/physics/photon_return_model.py:137:    range_m: float,
+src/physics/photon_return_model.py:141:    time_s = round_trip_time(range_m)
+src/physics/photon_return_model.py:182:    if target.range_m <= 0:
+src/physics/photon_return_model.py:183:        raise ValueError("target.range_m must be positive.")
+src/physics/photon_return_model.py:206:        / (np.pi * target.range_m**2)
+src/physics/photon_return_model.py:210:        range_m=target.range_m,
+src/physics/photon_return_model.py:319:        range_m=target.range_m,
+src/physics/photon_return_model.py:356:        round_trip_time_s=round_trip_time(target.range_m),
+src/physics/photon_return_model.py:370:        target=TargetParameters(range_m=1000.0),
+src/physics/beam_geometry.py:34:    range_m: float,
+src/physics/beam_geometry.py:41:    if range_m < 0:
+src/physics/beam_geometry.py:42:        raise ValueError("range_m cannot be negative.")
+src/physics/beam_geometry.py:48:        + range_m * np.tan(half_angle_rad)
+src/physics/beam_geometry.py:53:    range_m: float,
+src/physics/beam_geometry.py:57:    radius = beam_radius_m(range_m, beam)
+src/physics/beam_geometry.py:63:    range_m: float,
+src/physics/beam_geometry.py:71:    spot_area = beam_spot_area_m2(range_m, beam)
+src/physics/journal_grade_model.py:70:    range_m: float = 1000.0
+src/physics/journal_grade_model.py:76:        if self.range_m <= 0:
+src/physics/journal_grade_model.py:77:            raise ValueError("range_m must be positive.")
+src/physics/journal_grade_model.py:105:    def maximum_unambiguous_range_m(self) -> float:
+src/physics/journal_grade_model.py:140:        range_m=target.range_m,
+src/physics/journal_grade_model.py:151:            target.range_m,
+src/physics/journal_grade_model.py:158:        / (np.pi * target.range_m**2)
+src/physics/journal_grade_model.py:176:    target_range_m: float,
+src/physics/journal_grade_model.py:181:        2.0 * target_range_m / SPEED_OF_LIGHT_M_S
+src/physics/journal_grade_model.py:212:        target_range_m=target.range_m,
+src/physics/atmospheric_channel.py:40:    range_m: float | NDArray[np.float64],
+src/physics/atmospheric_channel.py:44:    ranges = np.asarray(range_m, dtype=np.float64)
+src/physics/atmospheric_channel.py:47:        raise ValueError("range_m cannot contain negative values.")
+configs/experiment/short_communication.yaml:39:  detection_threshold: 0.90
+configs/experiment/short_communication.yaml:41:  maximum_steps: 20
+configs/physics/journal_grade.yaml:33:  range_m: 1000.0
+configs/base.yaml:15:  max_range_m: 3000.0
+configs/base.yaml:69:  detection_thresholds: 101
+scripts/analysis/validate_journal_grade_model.py:31:    for range_m in ranges:
+scripts/analysis/validate_journal_grade_model.py:38:            target=JournalTarget(range_m=range_m),
+scripts/analysis/validate_journal_grade_model.py:45:                "range_m": range_m,
+scripts/analysis/validate_journal_grade_model.py:66:        "maximum_range_m": (
+scripts/analysis/validate_journal_grade_model.py:67:            JournalHistogram().maximum_unambiguous_range_m
+scripts/analysis/compare_baseline_policies.py:72:            total_photon_budget=5.0e12,
+scripts/analysis/compare_baseline_policies.py:73:            photons_per_action=2.5e11,
+scripts/analysis/compare_baseline_policies.py:76:            detection_threshold=0.90,
+scripts/analysis/compare_baseline_policies.py:77:            maximum_steps=20,
+scripts/analysis/validate_photon_physics.py:74:    for range_m in np.linspace(100.0, 3000.0, 60):
+scripts/analysis/validate_photon_physics.py:81:                range_m=float(range_m),
+scripts/analysis/validate_photon_physics.py:88:                "range_m": float(range_m),
+scripts/analysis/validate_photon_physics.py:104:        range_m=1000.0,
+scripts/analysis/validate_photon_physics.py:147:                range_m=1000.0,
+scripts/analysis/validate_photon_physics.py:178:            range_m=1000.0,
+scripts/analysis/validate_photon_physics.py:220:    ranges = [row["range_m"] for row in rows]
+scripts/data/simulate_single_return.py:31:            range_m=1000.0,
+
+===== SUMMARY =====
+{
+  "experiment": "baseline_policy_comparison_v1",
+  "git_commit": "bacd2740e9c485180b258c9a445376597b573fc5",
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55
+  ],
+  "target_regions": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "summary": {
+    "uniform": {
+      "episodes": 30.0,
+      "detection_rate": 0.7666666666666667,
+      "mean_photons_used": 1958333333333.3333,
+      "mean_photons_when_detected": 1032608695652.174,
+      "mean_steps": 7.833333333333333,
+      "false_focus_rate": 0.0
+    },
+    "random": {
+      "episodes": 30.0,
+      "detection_rate": 0.6333333333333333,
+      "mean_photons_used": 2891666666666.6665,
+      "mean_photons_when_detected": 1671052631578.9473,
+      "mean_steps": 11.566666666666666,
+      "false_focus_rate": 0.0
+    },
+    "greedy": {
+      "episodes": 30.0,
+      "detection_rate": 0.9,
+      "mean_photons_used": 1650000000000.0,
+      "mean_photons_when_detected": 1277777777777.7778,
+      "mean_steps": 6.6,
+      "false_focus_rate": 0.0
+    },
+    "entropy": {
+      "episodes": 30.0,
+      "detection_rate": 0.9,
+      "mean_photons_used": 1650000000000.0,
+      "mean_photons_when_detected": 1277777777777.7778,
+      "mean_steps": 6.6,
+      "false_focus_rate": 0.0
+    },
+    "information_gain": {
+      "episodes": 30.0,
+      "detection_rate": 0.9333333333333333,
+      "mean_photons_used": 1650000000000.0,
+      "mean_photons_when_detected": 1410714285714.2856,
+      "mean_steps": 6.6,
+      "false_focus_rate": 0.0
+    }
+  }
+}
+===== EPISODES =====
+     151 results/processed/baseline_comparison/episodes.csv
+policy,seed,target_region_index,detected,termination_reason,steps,photons_used,target_posterior,maximum_non_target_posterior
+uniform,11,0,True,target_detected,1,250000000000.0,0.999999999999,0.1
