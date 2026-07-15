@@ -1,0 +1,62 @@
+experiment:
+  name: final_short_communication_fast
+  description: >
+    Reduced but balanced physics-guided adaptive photon-allocation evaluation.
+
+evaluation:
+  seeds:
+    - 11
+    - 22
+    - 33
+    - 44
+    - 55
+
+  target_region_indices:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+
+  include_target_absent: true
+  target_absent_index: -1
+
+  photon_budgets:
+    low: 2.5e12
+    high: 7.5e12
+
+  photons_per_action: 2.5e11
+  pulses_per_action: 1000
+  detection_threshold: 0.90
+  maximum_steps: 30
+
+atmospheres:
+  clear:
+    extinction_coefficient_per_km: 0.10
+    volume_backscatter_coefficient_per_m: 1.0e-7
+    background_photons_per_bin_per_pulse: 1.0e-5
+
+  degraded:
+    extinction_coefficient_per_km: 0.50
+    volume_backscatter_coefficient_per_m: 5.0e-7
+    background_photons_per_bin_per_pulse: 5.0e-5
+
+policies:
+  - uniform
+  - greedy
+  - information_gain
+
+ablations:
+  - ablation_entropy_only
+  - ablation_entropy_contrast
+  - ablation_full_score
+
+outputs:
+  directory: results/processed/final_short_comm_fast
+  episodes_file: episodes.csv
+  summary_file: summary.json
+  range_summary_file: range_summary.csv
+  budget_summary_file: budget_summary.csv
+  atmosphere_summary_file: atmosphere_summary.csv
+  ablation_summary_file: ablation_summary.csv
